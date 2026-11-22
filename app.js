@@ -1,5 +1,7 @@
 const STORAGE_KEY = "my-gym-profile-v1";
 const HISTORY_KEY = "my-gym-history-v1";
+const CYCLE_START_KEY = "my-gym-cycle-start-v1";
+if (!localStorage.getItem(CYCLE_START_KEY)) localStorage.setItem(CYCLE_START_KEY, new Date().toISOString().slice(0,10));
 const days = [
   {number:"01",title:"Day 1 — Chest + Triceps",si:"පපුව සහ Triceps",desc:"Chest & Triceps workout"},
   {number:"02",title:"Day 2 — Legs",si:"කකුල්",desc:"Legs workout"},
@@ -33,7 +35,8 @@ function render() {
   $("pChest").textContent = p.chest ? p.chest + " in" : "—";
   $("pArm").textContent = p.arm ? p.arm + " in" : "—";
   const now = new Date();
-  const cycle = Math.floor((now - new Date(now.getFullYear(),0,1)) / 86400000) % 4;
+  const start = new Date(localStorage.getItem(CYCLE_START_KEY) + "T00:00:00");
+  const cycle = Math.floor((new Date(now.getFullYear(),now.getMonth(),now.getDate()) - start) / 86400000) % 4;
   const today = days[cycle];
   $("todayTitle").textContent = today.si;
   $("todayDescription").textContent = today.desc;
