@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="si">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="Personal workout and progress tracker">
+  <title>MY GYM — Workout Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark">MG</div>
+      <div class="brand-copy"><strong>MY GYM</strong><span>PERSONAL WORKOUT TRACKER</span></div>
+      <button class="icon-button" id="profileShortcut" aria-label="Profile">●</button>
+    </header>
+
+    <main id="appMain">
+      <section class="screen active" id="homeScreen">
+        <div class="welcome-row">
+          <div><p class="eyebrow">ඔබේ පුහුණු ගමන</p><h1>ආයුබෝවන්! <span>💪</span></h1><p class="muted">අදත් ඔබේ ඉලක්කය වෙනුවෙන් වැඩ කරමු.</p></div>
+          <div class="streak"><strong>—</strong><span>DAY STREAK</span></div>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">TODAY</p><h2>අද පුහුණුව</h2></div><span class="tag" id="todayTag">සැලසුම</span></div>
+        <article class="today-card">
+          <div class="today-icon">🏋️</div>
+          <div class="today-info"><span class="muted small">ඔබේ පුහුණු සැලැස්ම</span><h3 id="todayTitle">සැලැස්ම සකස් කරමින්...</h3><p id="todayDescription">ඔබේ දින චක්‍රය මෙතැනින් බලන්න.</p></div>
+          <button class="round-arrow" data-go="workout" aria-label="Workout බලන්න">›</button>
+        </article>
+        <div class="section-heading"><div><p class="eyebrow">YOUR OVERVIEW</p><h2>ඔබේ තත්ත්වය</h2></div><button class="text-button" data-go="progress">සියල්ල බලන්න</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>⚖️</span><strong id="weightStat">—</strong><small>බර (kg)</small></article>
+          <article class="stat-card"><span>📏</span><strong id="waistStat">—</strong><small>ඉණ (අඟල්)</small></article>
+          <article class="stat-card"><span>🏋️</span><strong id="sessionsStat">0</strong><small>සම්පූර්ණ කළ පුහුණු</small></article>
+          <article class="stat-card"><span>📈</span><strong id="recordsStat">0</strong><small>වාර්තා</small></article>
+        </div>
+        <div class="tip-card"><span>💡</span><div><strong>අද මතක තබාගන්න</strong><p>නිවැරදි තාක්ෂණය, ක්‍රමයෙන් වැඩි කරන බර සහ ප්‍රමාණවත් විවේකය වැදගත්.</p></div></div>
+      </section>
+
+      <section class="screen" id="workoutScreen">
+        <p class="eyebrow">TRAINING PLAN</p><h1>ව්‍යායාම සැලැස්ම</h1>
+        <p class="muted intro">දින 3ක් පුහුණුව · දින 1ක් විවේකය</p>
+        <div class="day-list" id="dayList"></div>
+        <div class="notice">⚠️ වේදනාවක් ඇති කරන ව්‍යායාම නවත්වන්න. බරට වඩා නිවැරදි ඉරියව්වට ප්‍රමුඛත්වය දෙන්න.</div>
+      </section>
+
+      <section class="screen" id="progressScreen">
+        <p class="eyebrow">YOUR JOURNEY</p><h1>ප්‍රගතිය</h1>
+        <p class="muted intro">ඔබේ ශරීර මිනුම් සහ පුහුණු වාර්තා.</p>
+        <article class="panel"><div class="panel-title"><h3>ශරීර මිනුම්</h3><span class="tag">LATEST</span></div>
+          <div class="measure-row"><label>බර (kg)</label><strong id="pWeight">—</strong></div>
+          <div class="measure-row"><label>ඉණ (අඟල්)</label><strong id="pWaist">—</strong></div>
+          <div class="measure-row"><label>පපුව (අඟල්)</label><strong id="pChest">—</strong></div>
+          <div class="measure-row"><label>අත (අඟල්)</label><strong id="pArm">—</strong></div>
+          <button class="primary-button full-button" data-go="profile">මිනුම් යාවත්කාලීන කරන්න</button>
+        </article>
+        <article class="panel"><div class="panel-title"><h3>පුහුණු ඉතිහාසය</h3></div><p class="muted" id="historyEmpty">තවම පුහුණු වාර්තා නැහැ. පුහුණුවක් සම්පූර්ණ කළ විට මෙතැන පෙන්වයි.</p><div id="historyList"></div></article>
+      </section>
+
+      <section class="screen" id="profileScreen">
+        <p class="eyebrow">PERSONAL DETAILS</p><h1>මගේ විස්තර</h1>
+        <p class="muted intro">ඔබේ වර්තමාන මිනුම් ඇතුළත් කරන්න.</p>
+        <form id="measureForm" class="panel form-panel">
+          <label>බර (kg)<input name="weight" type="number" min="1" max="400" step="0.1" placeholder="උදා: 67"></label>
+          <label>ඉණ (අඟල්)<input name="waist" type="number" min="1" max="100" step="0.1" placeholder="උදා: 32"></label>
+          <label>පපුව (අඟල්)<input name="chest" type="number" min="1" max="100" step="0.1" placeholder="උදා: 38"></label>
+          <label>අත (අඟල්)<input name="arm" type="number" min="1" max="50" step="0.1" placeholder="උදා: 13"></label>
+          <button class="primary-button full-button" type="submit">මිනුම් සුරකින්න</button>
+          <p class="form-message" id="formMessage" role="status"></p>
+        </form>
+        <p class="privacy-note">දැනට දත්ත මෙම browser එකේ පමණක් සුරැකේ. Cloud Sync සහ Login පසුව ආරක්ෂිතව එකතු කරමු.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="ප්‍රධාන මෙනුව">
+      <button class="nav-item active" data-tab="home"><span>⌂</span><small>මුල් පිටුව</small></button>
+      <button class="nav-item" data-tab="workout"><span>🏋️</span><small>පුහුණුව</small></button>
+      <button class="nav-item" data-tab="progress"><span>▥</span><small>ප්‍රගතිය</small></button>
+      <button class="nav-item" data-tab="profile"><span>○</span><small>මගේ විස්තර</small></button>
+    </nav>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
