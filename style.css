@@ -25,3 +25,11 @@
 .exercise-item strong{font-size:11px;color:var(--accent);white-space:nowrap}
 .detail-note{font-size:10px;line-height:1.7;color:var(--muted);margin:13px 0 0}
 .rest-message{padding:15px;border-radius:12px;background:var(--surface2);font-size:12px;line-height:1.8}
+
+.exercise-item{display:grid;grid-template-columns:25px 76px minmax(0,1fr);align-items:center;gap:10px;padding:9px;background:var(--surface2);border-radius:13px;min-width:0}
+.exercise-gif{width:76px;height:76px;object-fit:contain;border-radius:10px;background:#fff;display:block}
+.exercise-info{display:grid;gap:7px;min-width:0}
+.exercise-name{font-size:11px;line-height:1.5;font-weight:700;overflow-wrap:anywhere}
+.exercise-info small{font-size:10px;color:var(--accent);font-weight:700}
+.exercise-list{display:grid;gap:9px}
+@media(max-width:360px){.exercise-item{grid-template-columns:22px 64px minmax(0,1fr);gap:7px;padding:7px}.exercise-gif{width:64px;height:64px}.exercise-name{font-size:10px}}
