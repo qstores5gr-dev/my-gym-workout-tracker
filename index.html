@@ -43,6 +43,36 @@
         <p class="eyebrow">TRAINING PLAN</p><h1>ව්‍යායාම සැලැස්ම</h1>
         <p class="muted intro">දින 3ක් පුහුණුව · දින 1ක් විවේකය</p>
         <div class="day-list" id="dayList"></div>
+        <article class="panel logger-panel">
+          <div class="panel-title"><h3>අද ව්‍යායාමය සටහන් කරන්න</h3><span class="tag">LOG</span></div>
+          <form id="workoutForm" class="form-panel">
+            <label>පුහුණු දිනය
+              <select name="day" required><option>Chest + Triceps</option><option>Legs</option><option>Back + Biceps</option><option>Other</option></select>
+            </label>
+            <label>ව්‍යායාමයේ නම (English)
+              <input name="exercise" type="text" maxlength="60" placeholder="උදා: Bench Press" required>
+            </label>
+            <label>බර ඇතුළත් කරන ආකාරය
+              <select name="loadMode" id="loadMode"><option value="barbell">Barbell + Plates</option><option value="total">මුළු බර කෙලින්ම (kg)</option></select>
+            </label>
+            <div id="plateFields" class="load-fields">
+              <label>හිස් බාර් එකේ බර (kg)<input name="barWeight" type="number" min="0" max="100" step="0.5" value="5"></label>
+              <label>එක් පැත්තකට දාන Plate බර (kg)<input name="plateSide" type="number" min="0" max="200" step="0.5" value="15"></label>
+              <p class="calculated-load">මුළු බර: <strong id="calculatedWeight">35 kg</strong></p>
+              <small class="muted">බාර් එකේ බර + දෙපැත්තේ Plate බර. එක් පැත්තක බර පමණක් ඇතුළත් කරන්න.</small>
+            </div>
+            <div id="totalField" class="load-fields" hidden>
+              <label>මුළු බර (kg)<input name="totalWeight" type="number" min="0" max="500" step="0.5" placeholder="උදා: 12"></label>
+            </div>
+            <div class="two-fields">
+              <label>Sets<input name="sets" type="number" min="1" max="20" value="3" required></label>
+              <label>එක් Set එකක Reps<input name="reps" type="number" min="1" max="100" value="10" required></label>
+            </div>
+            <button class="primary-button full-button" type="submit">ව්‍යායාමය සුරකින්න</button>
+            <p class="form-message" id="workoutMessage" role="status"></p>
+          </form>
+          <div id="previousWorkout" class="previous-workout muted">ව්‍යායාමයේ නම ඇතුළත් කළ විට කලින් වාර්තාව පෙන්වයි.</div>
+        </article>
         <div class="notice">⚠️ වේදනාවක් ඇති කරන ව්‍යායාම නවත්වන්න. බරට වඩා නිවැරදි ඉරියව්වට ප්‍රමුඛත්වය දෙන්න.</div>
       </section>
 
