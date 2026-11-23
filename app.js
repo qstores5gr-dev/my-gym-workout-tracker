@@ -1,6 +1,7 @@
 const STORAGE_KEY = "my-gym-profile-v1";
 const HISTORY_KEY = "my-gym-history-v1";
 const CYCLE_START_KEY = "my-gym-cycle-start-v1";
+const WORKOUT_LOG_KEY = "my-gym-workout-log-v1";
 if (!localStorage.getItem(CYCLE_START_KEY)) localStorage.setItem(CYCLE_START_KEY, new Date().toISOString().slice(0,10));
 const days = [
   {number:"01",title:"Day 1 — Chest + Triceps",si:"පපුව සහ Triceps",desc:"Chest & Triceps workout"},
@@ -26,9 +27,10 @@ $("profileShortcut").addEventListener("click", () => showTab("profile"));
 function render() {
   const p = profile();
   const history = read(HISTORY_KEY, []);
+  const workoutLogs = read(WORKOUT_LOG_KEY, []);
   $("weightStat").textContent = p.weight ? p.weight : "—";
   $("waistStat").textContent = p.waist ? p.waist : "—";
-  $("sessionsStat").textContent = history.length;
+  $("sessionsStat").textContent = new Set(workoutLogs.map(x => x.date)).size + history.length;
   $("recordsStat").textContent = history.length;
   $("pWeight").textContent = p.weight ? p.weight + " kg" : "—";
   $("pWaist").textContent = p.waist ? p.waist + " in" : "—";
@@ -42,8 +44,9 @@ function render() {
   $("todayDescription").textContent = today.desc;
   $("todayTag").textContent = today.title.split(" — ")[0];
   $("dayList").innerHTML = days.map(d => `<article class="day-card"><div class="day-number">${d.number}</div><div class="day-copy"><strong>${d.title}</strong><small>${d.si}</small></div><span class="chevron">›</span></article>`).join("");
-  $("historyEmpty").style.display = history.length ? "none" : "block";
-  $("historyList").innerHTML = history.slice(0,5).map(item => `<div class="measure-row"><label>${escapeHtml(item.title)} · ${escapeHtml(item.date)}</label><strong>✓</strong></div>`).join("");
+  const recentLogs = workoutLogs.slice().reverse().slice(0,8);
+  $("historyEmpty").style.display = (history.length || workoutLogs.length) ? "none" : "block";
+  $("historyList").innerHTML = recentLogs.map(item => `<div class="measure-row log-row"><label><strong>${escapeHtml(item.exercise)}</strong><small>${escapeHtml(item.day)} · ${escapeHtml(item.date)}</small></label><strong>${item.weight} kg · ${item.sets}×${item.reps}</strong></div>`).join("") + history.slice(0,5).map(item => `<div class="measure-row"><label>${escapeHtml(item.title)} · ${escapeHtml(item.date)}</label><strong>✓</strong></div>`).join("");
 }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function fillForm() {
@@ -60,3 +63,54 @@ $("measureForm").addEventListener("submit", e => {
   render();
 });
 render();
+function getWorkoutWeight(form) {
+  const mode = form.elements.loadMode.value;
+  if (mode === "barbell") {
+    const bar = Number(form.elements.barWeight.value || 0);
+    const side = Number(form.elements.plateSide.value || 0);
+    return bar + side * 2;
+  }
+  return Number(form.elements.totalWeight.value || 0);
+}
+function updateLoadDisplay() {
+  const form = $("workoutForm");
+  const mode = form.elements.loadMode.value;
+  $("plateFields").hidden = mode !== "barbell";
+  $("totalField").hidden = mode !== "total";
+  $("calculatedWeight").textContent = getWorkoutWeight(form).toFixed(1).replace(/\\.0$/, "") + " kg";
+}
+function updatePreviousWorkout() {
+  const name = $("workoutForm").elements.exercise.value.trim().toLowerCase();
+  const match = read(WORKOUT_LOG_KEY, []).slice().reverse().find(x => x.exercise.toLowerCase() === name);
+  $("previousWorkout").textContent = match
+    ? `කලින් වාර්තාව: ${match.date} · ${match.weight} kg · ${match.sets} Sets × ${match.reps} Reps`
+    : "මෙම ව්‍යායාමයට තවම කලින් වාර්තාවක් නැහැ.";
+}
+$("workoutForm").elements.loadMode.addEventListener("change", updateLoadDisplay);
+["barWeight","plateSide"].forEach(name => $("workoutForm").elements[name].addEventListener("input", () => {
+  updateLoadDisplay();
+}));
+$("workoutForm").elements.exercise.addEventListener("input", updatePreviousWorkout);
+$("workoutForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const weight = getWorkoutWeight(form);
+  if (!Number.isFinite(weight) || weight < 0 || (form.elements.loadMode.value === "total" && !form.elements.totalWeight.value)) {
+    $("workoutMessage").textContent = "කරුණාකර නිවැරදි බර ඇතුළත් කරන්න.";
+    return;
+  }
+  const logs = read(WORKOUT_LOG_KEY, []);
+  logs.push({
+    date: new Date().toLocaleDateString("en-CA"),
+    day: form.elements.day.value,
+    exercise: form.elements.exercise.value.trim(),
+    weight: Number(weight.toFixed(1)),
+    sets: Number(form.elements.sets.value),
+    reps: Number(form.elements.reps.value)
+  });
+  localStorage.setItem(WORKOUT_LOG_KEY, JSON.stringify(logs));
+  $("workoutMessage").textContent = "ව්‍යායාම වාර්තාව සුරැකුණා ✓";
+  updatePreviousWorkout();
+  render();
+});
+updateLoadDisplay();
