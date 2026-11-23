@@ -4,10 +4,10 @@ const CYCLE_START_KEY = "my-gym-cycle-start-v1";
 const WORKOUT_LOG_KEY = "my-gym-workout-log-v1";
 if (!localStorage.getItem(CYCLE_START_KEY)) localStorage.setItem(CYCLE_START_KEY, new Date().toISOString().slice(0,10));
 const days = [
-  {number:"01",title:"Day 1 — Chest + Triceps",si:"පපුව සහ Triceps",desc:"Chest & Triceps workout"},
-  {number:"02",title:"Day 2 — Legs",si:"කකුල්",desc:"Legs workout"},
-  {number:"03",title:"Day 3 — Back + Biceps",si:"පිට සහ Biceps",desc:"Back & Biceps workout"},
-  {number:"04",title:"Day 4 — Rest",si:"විවේක දිනය",desc:"Recovery, sleep & mobility"}
+  {number:"01",title:"Day 1 — Chest + Triceps",si:"පපුව සහ Triceps",desc:"පපුව සහ අත් පිටුපස මාංශපේශි",exercises:[["Barbell Bench Press","3 × 8–12"],["Incline Dumbbell Press","3 × 8–12"],["Dumbbell Floor Press","2 × 10–12"],["Lying Dumbbell Triceps Extension","2 × 10–12"],["Close Grip Push-up","2 × 8–12"]]},
+  {number:"02",title:"Day 2 — Legs + Core",si:"කකුල් සහ උදරය",desc:"කකුල් සහ මධ්‍ය ශරීර මාංශපේශි",exercises:[["Goblet Squat","3 × 10–12"],["Dumbbell Romanian Deadlift","3 × 10–12"],["Reverse Lunge","2 × 10 / leg"],["Standing Calf Raise","3 × 15"],["Reverse Crunch","3 × 12"]]},
+  {number:"03",title:"Day 3 — Back + Biceps",si:"පිට සහ Biceps",desc:"පිට සහ අත් ඉදිරිපස මාංශපේශි",exercises:[["One Arm Dumbbell Row","3 × 10 / side"],["Bent Over Barbell Row","3 × 8–12"],["EZ Bar Curl","3 × 10"],["Alternating Dumbbell Curl","2 × 10"],["Hammer Curl","2 × 10"]]},
+  {number:"04",title:"Day 4 — Rest",si:"විවේක දිනය",desc:"සම්පූර්ණ විවේකය. ඉන්පසු Day 1 නැවත ආරම්භ කරන්න.",exercises:[]}
 ];
 const $ = (id) => document.getElementById(id);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; } };
@@ -43,7 +43,9 @@ function render() {
   $("todayTitle").textContent = today.si;
   $("todayDescription").textContent = today.desc;
   $("todayTag").textContent = today.title.split(" — ")[0];
-  $("dayList").innerHTML = days.map(d => `<article class="day-card"><div class="day-number">${d.number}</div><div class="day-copy"><strong>${d.title}</strong><small>${d.si}</small></div><span class="chevron">›</span></article>`).join("");
+  $("dayList").innerHTML = days.map(d => `<button type="button" class="day-card" data-day="${d.number}"><span class="day-number">${d.number}</span><span class="day-copy"><strong>${d.title}</strong><small>${d.si}</small></span><span class="chevron">›</span></button>`).join("");
+  document.querySelectorAll("[data-day]").forEach(button => button.addEventListener("click", () => showDayDetail(button.dataset.day)));
+
   const recentLogs = workoutLogs.slice().reverse().slice(0,8);
   $("historyEmpty").style.display = (history.length || workoutLogs.length) ? "none" : "block";
   $("historyList").innerHTML = recentLogs.map(item => `<div class="measure-row log-row"><label><strong>${escapeHtml(item.exercise)}</strong><small>${escapeHtml(item.day)} · ${escapeHtml(item.date)}</small></label><strong>${item.weight} kg · ${item.sets}×${item.reps}</strong></div>`).join("") + history.slice(0,5).map(item => `<div class="measure-row"><label>${escapeHtml(item.title)} · ${escapeHtml(item.date)}</label><strong>✓</strong></div>`).join("");
@@ -114,3 +116,17 @@ $("workoutForm").addEventListener("submit", e => {
   render();
 });
 updateLoadDisplay();
+
+function showDayDetail(number) {
+  const day = days.find(item => item.number === number);
+  if (!day) return;
+  $("detailEyebrow").textContent = "DAY " + Number(day.number);
+  $("detailTitle").textContent = day.title.split(" — ")[1];
+  $("detailDescription").textContent = day.desc;
+  $("exerciseList").innerHTML = day.exercises.length
+    ? day.exercises.map((exercise, index) => `<div class="exercise-item"><span class="exercise-index">${index + 1}</span><span class="exercise-name">${escapeHtml(exercise[0])}</span><strong>${escapeHtml(exercise[1])}</strong></div>`).join("")
+    : '<div class="rest-message">😴 අද සම්පූර්ණ විවේක දිනයක්. ශරීරයට යථා තත්ත්වයට පත්වීමට කාලය දෙන්න.</div>';
+  $("dayDetail").hidden = false;
+  $("dayDetail").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("closeDayDetail").addEventListener("click", () => { $("dayDetail").hidden = true; });
