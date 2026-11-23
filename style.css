@@ -12,3 +12,16 @@
 .previous-workout{font-size:11px;line-height:1.7;margin-top:14px;padding:11px;background:var(--surface2);border-radius:12px}
 .log-row label{display:grid;gap:3px}
 .log-row small{color:var(--muted);font-size:10px}
+
+.day-card{width:100%;text-align:left;color:var(--text);font:inherit;cursor:pointer}
+.day-card:active{transform:scale(.99)}
+.day-detail{margin-top:15px;scroll-margin-top:15px}
+.day-detail[hidden]{display:none}
+.detail-intro{font-size:12px;margin-bottom:12px}
+.exercise-list{display:grid;gap:8px}
+.exercise-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:12px;background:var(--surface2)}
+.exercise-index{width:27px;height:27px;display:grid;place-items:center;border-radius:9px;background:rgba(163,230,53,.12);color:var(--accent);font-size:11px;font-weight:800;flex-shrink:0}
+.exercise-name{flex:1;font-size:12px;font-weight:600}
+.exercise-item strong{font-size:11px;color:var(--accent);white-space:nowrap}
+.detail-note{font-size:10px;line-height:1.7;color:var(--muted);margin:13px 0 0}
+.rest-message{padding:15px;border-radius:12px;background:var(--surface2);font-size:12px;line-height:1.8}
