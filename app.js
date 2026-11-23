@@ -31,7 +31,7 @@ function render() {
   $("weightStat").textContent = p.weight ? p.weight : "—";
   $("waistStat").textContent = p.waist ? p.waist : "—";
   $("sessionsStat").textContent = new Set(workoutLogs.map(x => x.date)).size + history.length;
-  $("recordsStat").textContent = history.length;
+  $("recordsStat").textContent = workoutLogs.length;
   $("pWeight").textContent = p.weight ? p.weight + " kg" : "—";
   $("pWaist").textContent = p.waist ? p.waist + " in" : "—";
   $("pChest").textContent = p.chest ? p.chest + " in" : "—";
@@ -77,7 +77,7 @@ function updateLoadDisplay() {
   const mode = form.elements.loadMode.value;
   $("plateFields").hidden = mode !== "barbell";
   $("totalField").hidden = mode !== "total";
-  $("calculatedWeight").textContent = getWorkoutWeight(form).toFixed(1).replace(/\\.0$/, "") + " kg";
+  $("calculatedWeight").textContent = getWorkoutWeight(form).toFixed(1).replace(/\.0$/, "") + " kg";
 }
 function updatePreviousWorkout() {
   const name = $("workoutForm").elements.exercise.value.trim().toLowerCase();
